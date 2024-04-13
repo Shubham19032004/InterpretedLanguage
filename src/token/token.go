@@ -30,6 +30,19 @@ const (
 	RBRACE = "}"
 
 	// Keywords
-	FUCNTION = "FUNCTION"
+	FUNCTION = "FUNCTION"
 	LET      = "LET"
 )
+
+var Keywords=map[string]TokenType{
+	"fn":FUNCTION,
+	"let":LET,
+}
+
+// CHECK IF GIVEN IDENTIFIER IS IN FACT A KEYWORD
+func LookupIdent(ident string) TokenType{
+	if tok,ok:=Keywords[ident];ok{
+		return tok
+	}
+	return IDENT
+}
