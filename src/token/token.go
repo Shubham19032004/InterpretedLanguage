@@ -9,8 +9,8 @@ type Token struct {
 
 const (
 	ILLEGAL = "ILLEGAL"
-	// END OF FILE 
-	EOF     = "EOF"
+	// END OF FILE
+	EOF = "EOF"
 
 	// identifiers+literals
 	IDENT = "IDENT"
@@ -18,16 +18,16 @@ const (
 
 	// Operators
 	ASSIGN = "="
-	PLUSE  = "+"
+	PLUS   = "+"
 
 	// DELIMIETES
 	COMMA     = ","
-	SEMICOLOM = ";"
+	SEMICOLON = ";"
 
-	LPARAM = "("
-	RPARAM = ")"
-	LBRACE = "}"
-	RBRACE = "{"
+	LPAREN = "("
+	RPAREN = ")"
+	LBRACE = "{"
+	RBRACE = "}"
 
 	// Keywords
 	FUCNTION = "FUNCTION"

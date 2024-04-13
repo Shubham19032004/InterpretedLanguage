@@ -2,8 +2,9 @@ package lexer
 
 import (
 	"testing"
-	"src/token"
-	)
+
+	"github.com/Shubham19032004/plus/src/token"
+)
 
 func TestNextToken(t *testing.T) {
 	input := `=+(){},;`
@@ -19,7 +20,7 @@ func TestNextToken(t *testing.T) {
 		{token.RBRACE, "}"},
 		{token.COMMA, ","},
 		{token.SEMICOLON, ";"},
-		{token.EOF, "EOF"},
+		{token.EOF, ""},
 	}
 	l := New(input)
 	for i, tt := range tests {

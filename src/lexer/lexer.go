@@ -1,8 +1,6 @@
 package lexer
 
-import (
-	"src/token"
-)
+import "github.com/Shubham19032004/plus/src/token"
 
 type Lexer struct {
 	input       string
@@ -54,6 +52,6 @@ func (l *Lexer) NextToken() token.Token {
 	l.readChar()
 	return tok
 }
-func newToken(tokenType token.TokenType, ch byte) token.token {
+func newToken(tokenType token.TokenType, ch byte) token.Token {
 	return token.Token{Type: tokenType, Literal: string(ch)}
 }
