@@ -19,9 +19,9 @@ let foobar = 838383;
 	if program == nil {
 		t.Fatalf("ParseProgram() returned nil")
 	}
-	if len(program.Statements) != 3 {
+	if len(program.Statement) != 3 {
 		t.Fatalf("program.Statements does not contain 3 statements. got=%d",
-			len(program.Statements))
+			len(program.Statement))
 	}
 	tests := []struct {
 		expectedIdentifer string
