@@ -47,6 +47,9 @@ func (p *Parser) parseStatement() ast.Statement {
 	// calls parser for let statement
 	case token.LET:
 		return p.parseLetStatement()
+	case token.RETURN:
+		return p.parseLetStatement()
+
 	default:
 		return nil
 
@@ -70,6 +73,18 @@ func (p *Parser) parseLetStatement() *ast.LetStatement {
 	}
 	return stmt
 }
+//PARSER FOR RETURN STATEMENT 
+func (p *Parser) parseReturnStatement() *ast.ReturnStatement{
+	stmt:=&ast.ReturnStatement{Token: p.curToken}
+	p.nextToken()
+
+	for !p.curTokenIs(token.SEMICOLON){
+		p.nextToken()
+	}
+	return stmt
+}
+
+
 
 // PARSER FOR ERROR STATEMENT
 func (p *Parser) Errors() []string {
@@ -98,6 +113,7 @@ func (p *Parser) expectPeek(t token.TokenType) bool {
 		p.nextToken()
 		return true
 	} else {
+		p.peekError(t)
 		return false
 	}
 }
