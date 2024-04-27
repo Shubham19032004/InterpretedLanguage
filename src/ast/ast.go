@@ -53,13 +53,40 @@ type ExpressionStatement struct {
 	Expression Expression  //hold the Expression
 }
 
+type PrefixExpression struct {
+	Token    token.Token //prefix token e.g=>!
+	Operator string
+	Right    Expression
+}
+
 // FOR INTEGER  STATEMENT
 type IntegerLiteral struct {
 	Token token.Token
 	Value int64 //hold the actual value of the integer not the string value
 }
 
+// FOR INFIX EXPRESSION 5 + 6
+type InfixExpression struct {
+	Token    token.Token //The operator token ,e.g. +
+	Left     Expression
+	Operator string
+	Right    Expression
+}
+
 // helper functions
+func (oe *InfixExpression) expressionNode()      {}
+func (oe *InfixExpression) TokenLiteral() string { return oe.Token.Literal }
+func (oe *InfixExpression) String() string {
+	var out bytes.Buffer
+	out.WriteString("(")
+	out.WriteString(oe.Left.String())
+	out.WriteString(" " + oe.Operator + " ")
+	out.WriteString(oe.Right.String())
+	out.WriteString(")")
+	return out.String()
+
+}
+
 // For let statement
 func (ls *LetStatement) statementNode()       {}
 func (ls *LetStatement) TokenLiteral() string { return ls.Token.Literal }
@@ -87,6 +114,22 @@ func (p *Program) TokenLiteral() string {
 	} else {
 		return ""
 	}
+}
+
+// Prefix Operators
+func (pe *PrefixExpression) expressionNode()      {}
+func (pe *PrefixExpression) TokenLiteral() string { return pe.Token.Literal }
+
+// Add () arround  operator and its operand
+func (pe *PrefixExpression) String() string {
+
+	var out bytes.Buffer
+	out.WriteString("(")
+	// Operator is going to be string that can be either ! or -
+	out.WriteString(pe.Operator)
+	out.WriteString(pe.Right.String())
+	out.WriteString(")")
+	return out.String()
 }
 
 // creates a buffer and writes the return value of each statements String() method to it
