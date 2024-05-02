@@ -11,9 +11,9 @@ import (
 
 func TestParsingInfixExpressions(t *testing.T) {
 	infixTests := []struct {
-		input string
-		leftValue interface{}
-		operator string
+		input      string
+		leftValue  interface{}
+		operator   string
 		rightValue interface{}
 	}{
 		{"true == true", true, "==", true},
@@ -50,10 +50,10 @@ func TestParsingInfixExpressions(t *testing.T) {
 		// }
 		if !testLiteralExpression(t, exp.Left, tt.leftValue) {
 			return
-			}
-			if !testLiteralExpression(t, exp.Right, tt.rightValue) {
+		}
+		if !testLiteralExpression(t, exp.Right, tt.rightValue) {
 			return
-			}
+		}
 	}
 }
 
@@ -159,6 +159,25 @@ func TestOperatorPrecedenceParsing(t *testing.T) {
 		{
 			"3 + 4 * 5 == 3 * 1 + 4 * 5",
 			"((3 + (4 * 5)) == ((3 * 1) + (4 * 5)))",
+		},
+		{
+			"1+(2+3)+4",
+			"((1+(2+3))+4)",
+		}, {
+			"(5 + 5) * 2",
+			"((5 + 5) * 2)",
+		},
+		{
+			"2 / (5 + 5)",
+			"(2 / (5 + 5))",
+		},
+		{
+			"-(5 + 5)",
+			"(-(5 + 5))",
+		},
+		{
+			"!(true == true)",
+			"(!(true == true))",
 		},
 	}
 	for _, tt := range tests {

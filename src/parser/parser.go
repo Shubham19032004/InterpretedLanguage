@@ -9,7 +9,7 @@ import (
 	"github.com/Shubham19032004/plus/src/token"
 )
 
-//Binding power:-How tighty a token binds to its neighboring token 
+//Binding power:-How tighty a token binds to its neighboring token
 const (
 	// 	higher preference or lower
 	_           int = iota //0
@@ -59,6 +59,7 @@ func New(l *lexer.Lexer) *Parser {
 	p.registerPrefix(token.MINUS, p.parsePrefixExpression)
 	p.registerPrefix(token.TRUE,p.parseBoolean)
 	p.registerPrefix(token.FALSE,p.parseBoolean)
+	p.registerPrefix(token.LPAREN,p.parseGroupedExpression)
 	p.infixParseFns = make(map[token.TokenType]infixParseFn)
 	p.registerInfix(token.PLUS, p.parseInfixExpression)
 	p.registerInfix(token.MINUS, p.parseInfixExpression)
@@ -74,6 +75,14 @@ func (p *Parser) parseBoolean() ast.Expression{
 	return &ast.Boolean{Token:p.curToken,Value: p.curTokenIs(token.TRUE)}
 }
 
+func (p *Parser) parseGroupedExpression() ast.Expression{
+	p.nextToken()
+	exp:=p.parseExpression(LOWEST)
+	if !p.expectPeek(token.RPAREN){
+		return nil
+	}
+	return exp
+}
 
 // Helper function that is use to move token
 func (p *Parser) nextToken() {
