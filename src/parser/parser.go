@@ -9,6 +9,7 @@ import (
 	"github.com/Shubham19032004/plus/src/token"
 )
 
+//Binding power:-How tighty a token binds to its neighboring token 
 const (
 	// 	higher preference or lower
 	_           int = iota //0
@@ -126,6 +127,8 @@ func (p *Parser) parseExpression(precedence int) ast.Expression {
 		return nil
 	}
 	leftExp := prefix()
+
+	//For i not equal to semicolon and check peekPrecedence
 	for !p.peekTokenIs(token.SEMICOLON) && precedence < p.PeekPrecedence() {
 		infix := p.infixParseFns[p.peekToken.Type]
 		if infix == nil {
@@ -202,7 +205,6 @@ func (p *Parser) expectPeek(t token.TokenType) bool {
 		return false
 	}
 }
-
 // FOR PREFIX EXPRESSION
 func (p *Parser) parsePrefixExpression() ast.Expression {
 	expression := &ast.PrefixExpression{
