@@ -79,6 +79,25 @@ type Boolean struct {
 	Value bool // can save either true or false
 }
 
+// IF-ELSE STATEMENT
+type IfExpression struct {
+	Token       token.Token
+	Condition   Expression
+	Consequence *BlockStatement
+	Alternative *BlockStatement
+}
+
+// String implements Expression.
+func (ie *IfExpression) String() string {
+	panic("unimplemented")
+}
+
+// IF-ELSE BLOCK STATEMENT
+type BlockStatement struct {
+	Token      token.Token
+	Statements []Statement
+}
+
 // helper functions
 func (oe *InfixExpression) expressionNode()      {}
 func (oe *InfixExpression) TokenLiteral() string { return oe.Token.Literal }
@@ -118,6 +137,34 @@ func (il *IntegerLiteral) String() string       { return il.Token.Literal }
 func (b *Boolean) expressionNode()      {}
 func (b *Boolean) TokenLiteral() string { return b.Token.Literal }
 func (b *Boolean) String() string       { return b.Token.Literal }
+
+// FOR IF-ELSE STATEMENT
+func (ie *IfExpression) expressionNode()      {}
+func (ie *IfExpression) TokenLiteral() string { return ie.Token.Literal }
+func (ie *IfExpression) string() string {
+	var out bytes.Buffer
+	out.WriteString("if")
+	out.WriteString(ie.Condition.String())
+	out.WriteString(" ")
+	out.WriteString(ie.Condition.String())
+	if ie.Alternative != nil {
+		out.WriteString("else")
+		out.WriteString(ie.Alternative.String())
+	}
+	return out.String()
+
+}
+
+// For IF-ELSE BLOCK STATEMENT
+func (bs *BlockStatement) statementNode()       {}
+func (bs *BlockStatement) TokenLiteral() string { return bs.Token.Literal }
+func (bs *BlockStatement) String() string {
+	var out bytes.Buffer
+	for _, s := range bs.Statements {
+		out.WriteString(s.String())
+	}
+	return out.String()
+}
 
 func (p *Program) TokenLiteral() string {
 	if len(p.Statement) > 0 {
