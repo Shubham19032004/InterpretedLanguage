@@ -2,10 +2,10 @@ package parser
 
 import (
 	"fmt"
-	"strconv"
 	"github.com/Shubham19032004/plus/src/ast"
 	"github.com/Shubham19032004/plus/src/lexer"
 	"github.com/Shubham19032004/plus/src/token"
+	"strconv"
 )
 
 // Binding power:-How tighty a token binds to its neighboring token
@@ -231,6 +231,8 @@ func (p *Parser) parseLetStatement() *ast.LetStatement {
 	if !p.expectPeek(token.ASSIGN) {
 		return nil
 	}
+	p.nextToken()
+	stmt.Value=p.parseExpression(LOWEST)
 	for !p.curTokenIs(token.SEMICOLON) {
 		p.nextToken()
 	}
@@ -262,7 +264,7 @@ func (p *Parser) parseExpression(precedence int) ast.Expression {
 func (p *Parser) parseReturnStatement() *ast.ReturnStatement {
 	stmt := &ast.ReturnStatement{Token: p.curToken}
 	p.nextToken()
-
+	stmt.ReturnValue = p.parseExpression(LOWEST)
 	for !p.curTokenIs(token.SEMICOLON) {
 		p.nextToken()
 	}
