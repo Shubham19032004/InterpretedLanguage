@@ -31,25 +31,25 @@ func TestEvalBooleanExpression(t *testing.T) {
 	}
 	for _, tt := range tests {
 		evaluated := testEval(tt.input)
-		testBoolenObject(t, evaluated, tt.expected)
+		testBooleanObject(t, evaluated, tt.expected)
 	}
 }
 
-// func TestBangOperator(t *testing.T) {
-// 	tests := []struct {
-// 		input    string
-// 		expected bool
-// 	}{
-// 		{"!true", false},
-// 		{"!false", true},
-// 		{"!!true", true},
-// 		{"!!5", true},
-// 	}
-// 	for _, tt := range tests {
-// 		evaluated := testEval(tt.input)
-// 		TestBooleanObject(t, evaluated, tt.expected)
-// 	}
-// }
+func TestBangOperator(t *testing.T) {
+	tests := []struct {
+		input    string
+		expected bool
+	}{
+		{"!true", false},
+		{"!false", true},
+		{"!!true", true},
+		{"!!5", true},
+	}
+	for _, tt := range tests {
+		evaluated := testEval(tt.input)
+		testBooleanObject(t, evaluated, tt.expected)
+	}
+}
 
 func testEval(input string) object.Object {
 	l := lexer.New(input)
@@ -70,7 +70,7 @@ func testIntegerObject(t *testing.T, obj object.Object, expected int64) bool {
 	}
 	return true
 }
-func testBoolenObject(t *testing.T, obj object.Object, expected bool) bool {
+func testBooleanObject(t *testing.T, obj object.Object, expected bool) bool {
 	result, ok := obj.(*object.Boolean)
 	if !ok{
 		t.Errorf("object is not Boolean. got =%T (%+V)",obj,obj)
