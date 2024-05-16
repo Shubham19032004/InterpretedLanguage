@@ -8,6 +8,47 @@ import (
 	"github.com/Shubham19032004/plus/src/parser"
 )
 
+func TestBuiltinFunction(t *testing.T) {
+	tests := []struct {
+		input    string
+		expected interface{}
+	}{
+		{`len("")`, 0},
+		{`len("four")`, 4},
+		// {`len(1)`, "argument to `len` not supported got Integer"},
+	}
+	for _, tt := range tests {
+		evaluated := testEval(tt.input)
+		switch expected := tt.expected.(type) {
+		case int:
+			testIntegerObject(t, evaluated, int64(expected))
+
+		case string:
+			errObj,ok:=evaluated.(*object.Error)
+			if !ok{
+				t.Errorf("object in not Error.got=%T (%+v)",evaluated,expected)
+				continue
+			}
+			if errObj.Message!=expected{
+				t.Errorf("wrong error message. expected=%q,gpt=%q",expected,errObj.Message)
+			}
+
+		}
+	}
+}
+
+func TestStringConcatenation(t *testing.T) {
+	input := `"Hello" +" " + "World!" `
+	evaluated := testEval(input)
+	str, ok := evaluated.(*object.String)
+	if !ok {
+		t.Fatalf("object is not String. got=%T (%+v)", evaluated, evaluated)
+	}
+	if str.Value != "Hello World!" {
+		t.Errorf("string has wrong value. got=%q", str.Value)
+	}
+}
+
 func TestStringLiteral(t *testing.T) {
 	input := `"Hello World!"`
 	evaluated := testEval(input)
@@ -136,33 +177,33 @@ func TestReturnStatements(t *testing.T) {
 		{"if (10 > 1) { return 10; }", 10},
 		{
 			`
-if (10 > 1) {
-  if (10 > 1) {
-    return 10;
-  }
+			if (10 > 1) {
+			if (10 > 1) {
+				return 10;
+			}
 
-  return 1;
-}
-`,
+			return 1;
+			}
+			`,
 			10,
 		},
 		{
 			`
-let f = fn(x) {
-  return x;
-  x + 10;
-};
-f(10);`,
+			let f = fn(x) {
+			return x;
+			x + 10;
+			};
+			f(10);`,
 			10,
 		},
 		{
 			`
-let f = fn(x) {
-   let result = x + 10;
-   return result;
-   return 10;
-};
-f(10);`,
+			let f = fn(x) {
+			let result = x + 10;
+			return result;
+			return 10;
+			};
+			f(10);`,
 			20,
 		},
 	}
@@ -191,6 +232,10 @@ func TestErrorHandling(t *testing.T) {
 			"unknown operator: -BOOLEAN",
 		},
 		{
+			`Hello"-"World"`,
+			"unknown operator:String-STRING",
+		},
+		{
 			"true + false;",
 			"unknown operator: BOOLEAN + BOOLEAN",
 		},
@@ -198,6 +243,7 @@ func TestErrorHandling(t *testing.T) {
 			"true + false + true + false;",
 			"unknown operator: BOOLEAN + BOOLEAN",
 		},
+
 		{
 			"5; true + false; 5",
 			"unknown operator: BOOLEAN + BOOLEAN",
@@ -208,14 +254,14 @@ func TestErrorHandling(t *testing.T) {
 		},
 		{
 			`
-if (10 > 1) {
-  if (10 > 1) {
-    return true + false;
-  }
+			if (10 > 1) {
+			if (10 > 1) {
+				return true + false;
+			}
 
-  return 1;
-}
-`,
+			return 1;
+			}
+			`,
 			"unknown operator: BOOLEAN + BOOLEAN",
 		},
 		{

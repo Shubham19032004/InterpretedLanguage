@@ -9,8 +9,9 @@ import (
 )
 
 type ObjectType string
-
+type BuiltinFunction func (args ...Object)  Object
 const (
+	BUILTIN_OBJ="BUILTIN"
 	INTEGER_OBJ      = "INTEGER"
 	BOOLEAN_OBJ      = "BOOLEAN"
 	STRING_OBJ       = "STRING"
@@ -26,6 +27,9 @@ type String struct {
 
 type Error struct {
 	Message string
+}
+type Builtin struct{
+	Fn BuiltinFunction
 }
 
 func (e *Error) Type() ObjectType { return ERROR_OBJ }
@@ -71,6 +75,10 @@ func (rv *ReturnValue) Inspect() string  { return rv.Value.Inspect() }
 // STRING OBJ
 func (s *String) Type() ObjectType { return STRING_OBJ }
 func (s *String) Inspect() string  { return s.Value }
+
+//BUILDIN function object 
+func (b *Builtin) Type() ObjectType {return BOOLEAN_OBJ}
+func (b *Builtin) Inspect() string {return "builtin function"}
 
 // Function Object
 func (f *Function) Type() ObjectType { return FUNCTION_OBJ }
