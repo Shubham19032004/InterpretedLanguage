@@ -14,6 +14,8 @@ func TestNextToken(t *testing.T) {
 	};
 	let result = add(five, ten);
 	!-/*5;
+	"foobar"
+	"foo bar"
 	`
 	tests := []struct {
 		expectedType    token.TokenType
@@ -61,6 +63,8 @@ func TestNextToken(t *testing.T) {
 		{token.ASTERISK, "*"},
 		{token.INT, "5"},
 		{token.SEMICOLON, ";"},
+		{token.STRING,"foobar"},
+		{token.STRING,"foo bar"},
 		{token.EOF, ""},
 	}
 	l := New(input)

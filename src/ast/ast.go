@@ -4,8 +4,8 @@ package ast
 
 import (
 	"bytes"
-	"strings"
 	"github.com/Shubham19032004/plus/src/token"
+	"strings"
 )
 
 type Node interface {
@@ -79,6 +79,10 @@ type CallExpression struct {
 	Token     token.Token
 	Function  Expression
 	Arguments []Expression
+}
+type StringLiteral struct {
+	Token token.Token
+	Value string
 }
 
 // FOR BOOLEAN EXPRESSION
@@ -156,7 +160,7 @@ func (b *Boolean) String() string       { return b.Token.Literal }
 // FOR IF-ELSE STATEMENT
 func (ie *IfExpression) expressionNode()      {}
 func (ie *IfExpression) TokenLiteral() string { return ie.Token.Literal }
-func (ie *IfExpression) string() string {
+func (ie *IfExpression) stringstring() string {
 	var out bytes.Buffer
 	out.WriteString("if")
 	out.WriteString(ie.Condition.String())
@@ -169,6 +173,11 @@ func (ie *IfExpression) string() string {
 	return out.String()
 
 }
+
+// STRING
+func (sl *StringLiteral) expressionNode()      {}
+func (sl *StringLiteral) TokenLiteral() string { return sl.Token.Literal }
+func (sl *StringLiteral) String() string       { return sl.Token.Literal }
 
 // For IF-ELSE BLOCK STATEMENT
 func (bs *BlockStatement) statementNode()       {}
@@ -189,7 +198,7 @@ func (p *Program) TokenLiteral() string {
 	}
 }
 
-// FOR FUCTION STATEMENT
+// FOR FUNCTION STATEMENT
 func (fl *FunctionLiteral) expressionNode()      {}
 func (fl *FunctionLiteral) TokenLiteral() string { return fl.Token.Literal }
 func (fl *FunctionLiteral) String() string {
@@ -207,17 +216,17 @@ func (fl *FunctionLiteral) String() string {
 }
 
 // FOR CALL STATEMENT
-func (ce *CallExpression) expressionNode() {}
-func (ce *CallExpression) TokenLiteral() string {return ce.Token.Literal}
-func (ce *CallExpression) String() string{
+func (ce *CallExpression) expressionNode()      {}
+func (ce *CallExpression) TokenLiteral() string { return ce.Token.Literal }
+func (ce *CallExpression) String() string {
 	var out bytes.Buffer
-	args :=[]string{}
-	for _,a:=range ce.Arguments{
-		args=append(args, a.String())
+	args := []string{}
+	for _, a := range ce.Arguments {
+		args = append(args, a.String())
 	}
 	out.WriteString(ce.Function.String())
 	out.WriteString("(")
-	out.WriteString(strings.Join(args,","))
+	out.WriteString(strings.Join(args, ","))
 	out.WriteString(")")
 	return out.String()
 }

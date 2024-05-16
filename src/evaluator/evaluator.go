@@ -15,6 +15,8 @@ var (
 
 func Eval(node ast.Node, env *object.Environment) object.Object {
 	switch node := node.(type) {
+	case *ast.StringLiteral:
+		return &object.String{Value: node.Value}
 	case *ast.CallExpression:
 		function := Eval(node.Function, env)
 		if isError(function) {
@@ -76,7 +78,7 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 	return nil
 }
 
-// It simply checks  if a value has been associated with the givem name in the current enviroment
+// It simply checks  if a value has been associated with the given name in the current environment
 func evalIdentifier(node *ast.Identifier, env *object.Environment) object.Object {
 	val, ok := env.Get(node.Value)
 	if !ok {

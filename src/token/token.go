@@ -2,6 +2,7 @@ package token
 
 type TokenType string
 const (
+	STRING="STRING"
 	ILLEGAL = "ILLEGAL"
 	EOF     = "EOF"
 

@@ -58,6 +58,7 @@ func New(l *lexer.Lexer) *Parser {
 	p.registerPrefix(token.BANG, p.parsePrefixExpression)
 	p.registerPrefix(token.MINUS, p.parsePrefixExpression)
 	p.registerPrefix(token.TRUE, p.parseBoolean)
+	p.registerPrefix(token.STRING, p.parseStringLiteral)
 	p.registerPrefix(token.FALSE, p.parseBoolean)
 	p.registerPrefix(token.IF, p.parseIfExpression)
 	p.registerPrefix(token.LPAREN, p.parseGroupedExpression)
@@ -97,7 +98,7 @@ func (p *Parser) parseFunctionLiteral() ast.Expression {
 	if !p.expectPeek(token.LBRACE) {
 		return nil
 	}
-	lit.Body = p.parseBlockSatement()
+	lit.Body = p.parseBlockStatement()
 	return lit
 }
 
@@ -178,19 +179,19 @@ func (p *Parser) parseIfExpression() ast.Expression {
 	if !p.expectPeek(token.LBRACE) {
 		return nil
 	}
-	expression.Consequence = p.parseBlockSatement()
+	expression.Consequence = p.parseBlockStatement()
 	if p.peekTokenIs(token.ELSE) {
 		p.nextToken()
 		if !p.expectPeek(token.LBRACE) {
 			return nil
 		}
-		expression.Alternative = p.parseBlockSatement()
+		expression.Alternative = p.parseBlockStatement()
 	}
 
 	return expression
 }
 
-func (p *Parser) parseBlockSatement() *ast.BlockStatement {
+func (p *Parser) parseBlockStatement() *ast.BlockStatement {
 	block := &ast.BlockStatement{Token: p.curToken}
 	block.Statements = []ast.Statement{}
 	p.nextToken()
@@ -232,7 +233,7 @@ func (p *Parser) parseLetStatement() *ast.LetStatement {
 		return nil
 	}
 	p.nextToken()
-	stmt.Value=p.parseExpression(LOWEST)
+	stmt.Value = p.parseExpression(LOWEST)
 	for !p.curTokenIs(token.SEMICOLON) {
 		p.nextToken()
 	}
@@ -281,6 +282,10 @@ func (p *Parser) parseExpressionStatement() *ast.ExpressionStatement {
 	}
 	return stmt
 
+}
+
+func (p *Parser) parseStringLiteral() ast.Expression {
+	return &ast.StringLiteral{Token: p.curToken, Value: p.curToken.Literal}
 }
 
 // PARSER FOR ERROR STATEMENT

@@ -3,10 +3,10 @@ package lexer
 import "github.com/Shubham19032004/plus/src/token"
 
 type Lexer struct {
-	input       string
-	position    int
-	readPositon int
-	ch          byte
+	input        string
+	position     int
+	readPosition int
+	ch           byte
 }
 
 func New(input string) *Lexer {
@@ -17,19 +17,22 @@ func New(input string) *Lexer {
 
 func (l *Lexer) readChar() {
 	// Check if we reach end of the line
-	if l.readPositon >= len(l.input) {
+	if l.readPosition >= len(l.input) {
 		l.ch = 0
 	} else {
-		l.ch = l.input[l.readPositon]
+		l.ch = l.input[l.readPosition]
 	}
-	l.position = l.readPositon
-	l.readPositon += 1
+	l.position = l.readPosition
+	l.readPosition += 1
 }
 
 func (l *Lexer) NextToken() token.Token {
 	var tok token.Token
 	l.skipWhitespace()
 	switch l.ch {
+	case '"':
+		tok.Type = token.STRING
+		tok.Literal = l.readString()
 	case '-':
 		tok = newToken(token.MINUS, l.ch)
 	case '!':
@@ -130,9 +133,20 @@ func isDigit(ch byte) bool {
 
 // CHECK AHEAD OF THE INPUT
 func (l *Lexer) peekChar() byte {
-	if l.readPositon >= len(l.input) {
+	if l.readPosition >= len(l.input) {
 		return 0
 	} else {
-		return l.input[l.readPositon]
+		return l.input[l.readPosition]
 	}
+}
+
+func (l *Lexer) readString() string {
+	position := l.position + 1
+	for {
+		l.readChar()
+		if l.ch == '"' || l.ch == 0 {
+			break
+		}
+	}
+	return l.input[position:l.position]
 }
