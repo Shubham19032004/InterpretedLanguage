@@ -2,6 +2,8 @@ package token
 
 type TokenType string
 const (
+	LBRACKET="["
+	RBRACKET="]"
 	STRING="STRING"
 	ILLEGAL = "ILLEGAL"
 	EOF     = "EOF"

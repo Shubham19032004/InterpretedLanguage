@@ -9,6 +9,25 @@ import (
 	"github.com/Shubham19032004/plus/src/lexer"
 )
 
+func TestParsingArrayLiterals(t *testing.T){
+	inputs:="[1,2*2,3+3]"
+	l:=lexer.New(inputs)
+	p:=New(l)
+	program:=p.ParseProgram()
+	checkParserErrors(t,p)
+	stmt:=program.Statement[0].(*ast.ExpressionStatement)
+	array,ok:=stmt.Expression.(*ast.ArrayLiteral)
+	if !ok{
+		t.Fatalf("exp not ast.ArrayLiteral. got=%T",stmt.Expression)
+	}
+	if len(array.Elements)!=3{
+		t.Fatalf("len(array.elements) not 3.got=%d",len(array.Elements))
+	}
+	testIntegerLiteral(t,array.Elements[0] ,1)
+	testInfixExpression(t,array.Elements[1],2,"*",2)
+	testInfixExpression(t,array.Elements[2],3,"+",3)
+
+}
 
 func TestStringLiteralExpression(t *testing.T){
 	input :=`"hello world"`;
@@ -200,35 +219,7 @@ func checkParserErrors(t *testing.T, p *Parser) {
 	t.FailNow()
 }
 
-// func TestOperatorPrecedenceParsing(t *testing.T) {
-// 	tests := []struct {
-// 		input    string
-// 		expected string
-// 	}{
-// 		{
-// 			"a + add(b * c) + d",
-// 			"((a + add((b * c))) + d)",
-// 		},
-// 		{
-// 			"add(a, b, 1, 2 * 3, 4 + 5, add(6, 7 * 8))",
-// 			"add(a, b, 1, (2 * 3), (4 + 5), add(6, (7 * 8)))",
-// 		},
-// 		{
-// 			"add(a + b + c * d / f + g)",
-// 			"add((((a + b) + ((c * d) / f)) + g))",
-// 		},
-// 	}
-// 	for _, tt := range tests {
-// 		l := lexer.New(tt.input)
-// 		p := New(l)
-// 		program := p.ParseProgram()
-// 		checkParserErrors(t, p)
-// 		actual := program.String()
-// 		if actual != tt.expected {
-// 			t.Errorf("expected=%q, got=%q", tt.expected, actual)
-// 		}
-// 	}
-// }
+
 
 func testIdentifer(t *testing.T, exp ast.Expression, value string) bool {
 	ident, ok := exp.(*ast.Identifier)
@@ -283,7 +274,7 @@ func testBooleanLiteral(t *testing.T, exp ast.Expression, value bool) bool {
 }
 
 func testInfixExpression(t *testing.T, exp ast.Expression, left interface{},
-	opertor string, right interface{}) bool {
+	operator string, right interface{}) bool {
 	opExp, ok := exp.(*ast.InfixExpression)
 	if !ok {
 		t.Errorf("exp is not ast.OperatorExpression. got =%T(%s)", exp, exp)
@@ -292,8 +283,8 @@ func testInfixExpression(t *testing.T, exp ast.Expression, left interface{},
 	if !testLiteralExpression(t, opExp.Left, left) {
 		return false
 	}
-	if opExp.Operator != opertor {
-		t.Errorf("exp.Operator is not '%s'. got=%q", opertor, opExp.Operator)
+	if opExp.Operator != operator {
+		t.Errorf("exp.Operator is not '%s'. got=%q", operator, opExp.Operator)
 		return false
 	}
 	if !testLiteralExpression(t, opExp.Right, right) {
@@ -479,4 +470,23 @@ func TestCallExpressionParsing(t *testing.T) {
 	testLiteralExpression(t, exp.Arguments[0], 1)
 	testInfixExpression(t, exp.Arguments[1], 2, "*", 3)
 	testInfixExpression(t, exp.Arguments[2], 4, "+", 5)
+}
+
+func TestParsingIndexExpressions(t *testing.T){
+	input :="myArray[1+1]"
+	l:=lexer.New(input)
+	p:=New(l)
+	program:=p.ParseProgram()
+	checkParserErrors(t,p)
+	stmt,ok:=program.Statement[0].(*ast.ExpressionStatement)
+	indexExp,ok:=stmt.Expression.(*ast.IndexExpression)
+	if !ok{
+		t.Fatalf("exp not *ast.IndexExpression. got=%T",stmt.Expression)
+	}
+	if !testIdentifier(t,indexExp.Left,"myArray"){
+		return
+	}
+	if !testInfixExpression(t,indexExp.Index,1,"+",1){
+		return
+	}
 }

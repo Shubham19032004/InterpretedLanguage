@@ -8,6 +8,11 @@ import (
 	"strings"
 )
 
+type ArrayLiteral struct {
+	Token    token.Token
+	Elements []Expression
+}
+
 type Node interface {
 	TokenLiteral() string
 	String() string
@@ -99,6 +104,13 @@ type IfExpression struct {
 	Alternative *BlockStatement
 }
 
+type IndexExpression struct {
+	Token token.Token
+	Left  Expression
+	Index Expression
+}
+
+
 // String implements Expression.
 func (ie *IfExpression) String() string {
 	panic("unimplemented")
@@ -160,7 +172,7 @@ func (b *Boolean) String() string       { return b.Token.Literal }
 // FOR IF-ELSE STATEMENT
 func (ie *IfExpression) expressionNode()      {}
 func (ie *IfExpression) TokenLiteral() string { return ie.Token.Literal }
-func (ie *IfExpression) stringstring() string {
+func (ie *IfExpression) string() string {
 	var out bytes.Buffer
 	out.WriteString("if")
 	out.WriteString(ie.Condition.String())
@@ -285,3 +297,29 @@ func (es *ExpressionStatement) String() string {
 	return ""
 }
 func (i *Identifier) String() string { return i.Value }
+
+
+func (al *ArrayLiteral) expressionNode() {}
+func (al *ArrayLiteral) TokenLiteral()string{return al.Token.Literal}
+func (al *ArrayLiteral) String() string{
+	var out bytes.Buffer
+	elements:=[]string{}
+	for _,el:=range al.Elements{
+		elements = append(elements, el.String())
+	}
+	out.WriteString("[")
+	out.WriteString(strings.Join(elements,","))
+	out.WriteString("]")
+	return out.String()
+}
+func (ie *IndexExpression) expressionNode()      {}
+func (ie *IndexExpression) TokenLiteral() string { return ie.Token.Literal }
+func (ie *IndexExpression) String() string {
+	var out bytes.Buffer
+	out.WriteString("(")
+	out.WriteString(ie.Left.String())
+	out.WriteString("[")
+	out.WriteString(ie.Index.String())
+	out.WriteString("])")
+	return out.String()
+}

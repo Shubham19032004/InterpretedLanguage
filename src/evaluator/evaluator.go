@@ -78,9 +78,6 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 	return nil
 }
 
-
-
-
 func evalProgram(program *ast.Program, env *object.Environment) object.Object {
 	var result object.Object
 
@@ -299,30 +296,31 @@ func isTruthy(obj object.Object) bool {
 func newError(format string, a ...interface{}) *object.Error {
 	return &object.Error{Message: fmt.Sprintf(format, a...)}
 }
+
 // It simply checks  if a value has been associated with the given name in the current environment
 func evalIdentifier(
 	node *ast.Identifier,
 	env *object.Environment,
-)object.Object{
-	if val,ok:=env.Get(node.Value);ok{
+) object.Object {
+	if val, ok := env.Get(node.Value); ok {
 		return val
 	}
-	if builtins,ok:=builtins[node.Value]; ok{
+	if builtins, ok := builtins[node.Value]; ok {
 		return builtins
 	}
-	return newError("identifier not found:"+node.Value)
+	return newError("identifier not found:" + node.Value)
 }
-func applyFunction(fn object.Object,args []object.Object) object.Object{
-	switch fn :=fn.(type){
+func applyFunction(fn object.Object, args []object.Object) object.Object {
+	switch fn := fn.(type) {
 	case *object.Function:
-		extendedEnv:=extendFunctionEnv(fn,args)
-		evaluated:=Eval(fn.Body,extendedEnv)
+		extendedEnv := extendFunctionEnv(fn, args)
+		evaluated := Eval(fn.Body, extendedEnv)
 		return unwrapReturnValue(evaluated)
 	case *object.Builtin:
 		return fn.Fn(args...)
 
 	default:
-		return newError("not a function:%s",fn.Type())
+		return newError("not a function:%s", fn.Type())
 	}
 
 }
