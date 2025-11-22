@@ -5,7 +5,6 @@ import (
 
 	"github.com/Shubham19032004/plus/src/token"
 )
-
 func TestNextToken(t *testing.T) {
 	input := `let five = 5;
 	let ten = 10;
