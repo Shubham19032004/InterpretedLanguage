@@ -1,7 +1,6 @@
 package lexer
 
 import "github.com/Shubham19032004/plus/src/token"
-
 type Lexer struct {
 	input        string
 	position     int
